@@ -20,29 +20,22 @@ DIGITS = (
 
 # Functions
 
+def word_to_digit(s: str, index: int) -> str:
+    for value, digit in enumerate(DIGITS, 1):
+        if s[index:].startswith(digit):
+            return str(value)
+    return s[index]
+
 def read_values(stream=sys.stdin) -> list[list[str]]:
-    values = []
-    for line in stream:
-        letters = line.strip()
-        digits  = []
-
-        for index, letter in enumerate(letters):
-            if letter.isdigit():
-                digits.append(letter)
-
-            for value, digit in enumerate(DIGITS, 1):
-                if letters[index:].startswith(digit):
-                    digits.append(str(value))
-                    break
-
-        values.append(digits)
-    return values
+    return [
+        list(filter(str.isdigit, map(lambda p: word_to_digit(line, p[0]), enumerate(line))))
+        for line in stream
+    ]
 
 # Main Execution
 
 def main(stream=sys.stdin) -> None:
     values = read_values(stream)
-    print(values)
     total  = sum(
         int(digits[0] + digits[-1]) for digits in values
     )
