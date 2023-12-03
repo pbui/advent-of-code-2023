@@ -44,12 +44,12 @@ def find_numbers(schematic: Schematic) -> Iterator[Number]:
 
     for r in range(1, rows):
         for number in re.finditer(r'[0-9]+', schematic[r]):
-            yield (r, number.span()[0], number.span()[1] - 1)
+            yield (r, *number.span())
 
 def find_parts(schematic: Schematic, numbers: Iterator[Number]) -> Iterator[int]:
     for r, c_head, c_tail in numbers:
-        part = int(schematic[r][c_head:c_tail + 1])
-        for c in range(c_head, c_tail + 1):
+        part = int(schematic[r][c_head:c_tail])
+        for c in range(c_head, c_tail):
             neighbors = (schematic[r + dr][c + dc] for dr, dc in DIRECTIONS)
             if any(is_symbol(neighbor) for neighbor in neighbors):
                 yield part
