@@ -47,15 +47,6 @@ def find_numbers(schematic: Schematic) -> Iterator[Number]:
         for number in re.finditer(r'[0-9]+', schematic[r]):
             yield (r, *number.span())
 
-def find_parts(schematic: Schematic, numbers: Iterator[Number]) -> Iterator[int]:
-    for r, c_head, c_tail in numbers:
-        part = int(schematic[r][c_head:c_tail])
-        for c in range(c_head, c_tail):
-            neighbors = (schematic[r + dr][c + dc] for dr, dc in DIRECTIONS)
-            if any(is_symbol(neighbor) for neighbor in neighbors):
-                yield part
-                break
-
 def find_stars(schematic: Schematic) -> Iterator[Star]:
     rows    = len(schematic)
     columns = len(schematic[0])
@@ -68,13 +59,11 @@ def find_stars(schematic: Schematic) -> Iterator[Star]:
 
 def find_gears(schematic: Schematic, stars: Iterator[Star], numbers: list[Number]) -> Iterator[int]:
     for star_r, star_c in stars:
-        gears = []
-        for number_r, number_c_head, number_c_tail in numbers:
-            number = int(schematic[number_r][number_c_head:number_c_tail])
-            for dr, dc in DIRECTIONS:
-                if star_r + dr == number_r and number_c_head <= (star_c + dc) < number_c_tail:
-                    gears.append(number)
-                    break
+        gears = [
+            int(schematic[number_r][number_c_head:number_c_tail])
+            for number_r, number_c_head, number_c_tail in numbers
+            if any(star_r + dr == number_r and number_c_head <= (star_c + dc) < number_c_tail for dr, dc in DIRECTIONS)
+        ]
         if len(gears) == 2:
             yield gears[0] * gears[1]
 
