@@ -3,6 +3,7 @@
 ''' Day 03 - Part B '''
 
 from typing import Iterator
+import re
 import sys
 
 # Types
@@ -43,19 +44,8 @@ def find_numbers(schematic: Schematic) -> Iterator[Number]:
     columns = len(schematic[0])
 
     for r in range(1, rows):
-        number_head = None
-        number_tail = None
-        for c in range(1, columns):
-            token = schematic[r][c]
-            if token.isdigit():
-                if not number_head:
-                    number_head = c
-                number_tail = c
-            else:
-                if number_head and number_tail:
-                    yield (r, number_head, number_tail)
-                number_head = None
-                number_tail = None
+        for number in re.finditer(r'[0-9]+', schematic[r]):
+            yield (r, number.span()[0], number.span()[1] - 1)
 
 def find_parts(schematic: Schematic, numbers: Iterator[Number]) -> Iterator[int]:
     for r, c_head, c_tail in numbers:
