@@ -9,7 +9,7 @@ import sys
 # Types
 
 Numbers = set[int]
-Card    = list[Numbers, Numbers]
+Card    = list[Numbers]
 
 # Functions
 
