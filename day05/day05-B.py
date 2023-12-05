@@ -40,19 +40,15 @@ def read_almanac(stream=sys.stdin) -> tuple[Seeds, list[Map]]:
 
     return seeds, maps
 
-def locate_seed(srange: tuple[int, int], maps: list[Map], cache: dict[tuple[int, int], int]) -> int:
+def locate_seed(srange: tuple[int, int], maps: list[Map]) -> int:
     minimum = sys.maxsize
-    for location_src in range(srange[0], srange[0] + srange[1] + 1):
-        location_dst = location_src
-        for imap, amap in enumerate(maps):
-            if (imap, location_src) not in cache:
-                for dst, src, length in amap:
-                    if src <= location_src <= src + length:
-                        location_dst = dst + (location_src - src)
-                        break
-                cache[(imap, location_src)] = location_dst
-            location_dst = cache[(imap, location_src)]
-        minimum = min(location_dst, minimum)
+    for location in range(srange[0], srange[0] + srange[1] + 1):
+        for amap in maps:
+            for dst, src, length in amap:
+                if src <= location <= src + length:
+                    location = dst + (location - src)
+                    break
+        minimum = min(location, minimum)
 
     return minimum
 
@@ -60,8 +56,7 @@ def locate_seed(srange: tuple[int, int], maps: list[Map], cache: dict[tuple[int,
 
 def main(stream=sys.stdin) -> None:
     seeds, maps = read_almanac(stream)
-    cache       = {}
-    locations   = [locate_seed(srange, maps, cache) for srange in batched(seeds, 2)]
+    locations   = [locate_seed(srange, maps) for srange in batched(seeds, 2)]
     print(min(locations))
 
 if __name__ == '__main__':
