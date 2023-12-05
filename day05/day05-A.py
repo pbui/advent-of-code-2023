@@ -14,7 +14,7 @@ Maps  = list[Map]
 
 # Functions
 
-def read_almanac(stream=sys.stdin) -> tuple[Seeds, list[Map]]:
+def read_almanac(stream=sys.stdin) -> tuple[Seeds, Maps]:
     seeds: Seeds = [int(seed) for seed in stream.readline().split(':')[-1].split()]
     maps:  Maps  = []
 
@@ -32,7 +32,7 @@ def read_almanac(stream=sys.stdin) -> tuple[Seeds, list[Map]]:
 
     return seeds, maps
 
-def locate_seed(seed: int, maps: list[Map]) -> int:
+def locate_seed(seed: int, maps: Maps) -> int:
     location = seed
     for amap in maps:
         for dst, src, length in amap:

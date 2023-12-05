@@ -27,7 +27,7 @@ def batched(iterable, n):
     while batch := tuple(itertools.islice(it, n)):
         yield batch
 
-def read_almanac(stream=sys.stdin) -> tuple[Seeds, list[Map]]:
+def read_almanac(stream=sys.stdin) -> tuple[Seeds, Maps]:
     seeds: Seeds = [int(seed) for seed in stream.readline().split(':')[-1].split()]
     maps:  Maps  = []
 
@@ -45,7 +45,7 @@ def read_almanac(stream=sys.stdin) -> tuple[Seeds, list[Map]]:
 
     return seeds, maps
 
-def locate_seed(seed: int, maps: list[Map]={}) -> int:
+def locate_seed(seed: int, maps: Maps={}) -> int:
     location = seed
     for amap in maps:
         for dst, src, length in amap:
@@ -54,7 +54,7 @@ def locate_seed(seed: int, maps: list[Map]={}) -> int:
                 break
     return location
 
-def locate_seeds(srange: Range, maps: list[Map]={}) -> int:
+def locate_seeds(srange: Range, maps: Maps={}) -> int:
     seeds   = range(srange[0], srange[0] + srange[1])
     locator = functools.partial(locate_seed, maps=maps)
     return min(map(locator, seeds))
