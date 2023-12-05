@@ -36,7 +36,7 @@ def locate_seed(seed: int, maps: list[Map]) -> int:
     location = seed
     for amap in maps:
         for dst, src, length in amap:
-            if src <= location <= src + length:
+            if src <= location < src + length:
                 location = dst + (location - src)
                 break
 
