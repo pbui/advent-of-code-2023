@@ -6,7 +6,7 @@ import sys
 
 # Functions
 
-def race(charge_time, total_time):
+def race(charge_time: int, total_time: int) -> int:
     return charge_time * (total_time - charge_time)
 
 # Main Execution
