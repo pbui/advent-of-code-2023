@@ -64,8 +64,6 @@ def read_hands(stream=sys.stdin) -> list[Hand]:
 
 def main(stream=sys.stdin) -> None:
     hands    = sorted(read_hands(stream))
-    for hand in hands:
-        print(hand)
     winnings = sum(rank * hand.bid for rank, hand in enumerate(hands, 1))
     print(winnings)
 
