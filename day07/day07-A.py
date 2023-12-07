@@ -10,7 +10,6 @@ import sys
 # Constants
 
 LABELS = {l: v for v, l in enumerate('23456789TJQKA', 2)}
-print(LABELS)
 
 # Classes
 
@@ -27,21 +26,17 @@ class Hand:
     def __init__(self, cards=str, bid=str):
         self.cards  = cards
         self.bid    = int(bid)
-        self.type   = HandType.HIGH_CARD
+        counts      = Counter(self.cards)
 
-        counts = Counter(self.cards)
-        if len(counts) == 1:
-            self.type = HandType.FIVE_OF_A_KIND
-        elif len(counts) == 2 and any(l for l, count in counts.items() if count == 4):
-            self.type = HandType.FOUR_OF_A_KIND
-        elif len(counts) == 2 and any(l for l, count in counts.items() if count == 3):
-            self.type = HandType.FULL_HOUSE
-        elif len(counts) == 3 and any(l for l, count in counts.items() if count == 3):
-            self.type = HandType.THREE_OF_A_KIND
-        elif len(counts) == 3 and any(l for l, count in counts.items() if count == 2):
-            self.type = HandType.TWO_PAIR
-        elif len(counts) == 4 and any(l for l, count in counts.items() if count == 2):
-            self.type = HandType.ONE_PAIR
+        self.type   = (
+            HandType.FIVE_OF_A_KIND  if len(counts) == 1 else
+            HandType.FOUR_OF_A_KIND  if len(counts) == 2 and any(l for l, count in counts.items() if count == 4) else
+            HandType.FULL_HOUSE      if len(counts) == 2 and any(l for l, count in counts.items() if count == 3) else
+            HandType.THREE_OF_A_KIND if len(counts) == 3 and any(l for l, count in counts.items() if count == 3) else
+            HandType.TWO_PAIR        if len(counts) == 3 and any(l for l, count in counts.items() if count == 2) else
+            HandType.ONE_PAIR        if len(counts) == 4 and any(l for l, count in counts.items() if count == 2) else
+            HandType.HIGH_CARD
+        )
 
     def __lt__(self, other):
         if self.type == other.type:
@@ -64,8 +59,6 @@ def read_hands(stream=sys.stdin) -> list[Hand]:
 
 def main(stream=sys.stdin) -> None:
     hands    = sorted(read_hands(stream))
-    for hand in hands:
-        print(hand)
     winnings = sum(rank * hand.bid for rank, hand in enumerate(hands, 1))
     print(winnings)
 
