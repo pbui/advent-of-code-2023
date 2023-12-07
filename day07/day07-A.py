@@ -27,7 +27,6 @@ class Hand:
         self.cards  = cards
         self.bid    = int(bid)
         counts      = Counter(self.cards)
-
         self.type   = (
             HandType.FIVE_OF_A_KIND  if len(counts) == 1 else
             HandType.FOUR_OF_A_KIND  if len(counts) == 2 and any(l for l, count in counts.items() if count == 4) else
